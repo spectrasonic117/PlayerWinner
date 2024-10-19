@@ -1,0 +1,17 @@
+name: PlayerWinner
+version: '1.0.0'
+main: com.spectrasonic.PlayerWinner.PlayerWinnerPlugin
+api-version: '1.21'
+authors: [ Spectrasonic ]
+description: A Simple Winner PPlugin for Minecraft Events
+commands:
+  winner:
+    description: Announces the winner with fireworks and a title
+    usage: /<command> <player>
+    aliases: [win]
+    permission: playerwinner.use
+    permission-message: You don't have permission to use this command.
+permissions:
+  playerwinner.use:
+    description: Allows usage of the /winner command
+    default: op
