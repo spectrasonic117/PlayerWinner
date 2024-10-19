@@ -5,16 +5,19 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Firework;
-import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class FireworkLauncher {
 
+    // Define a list of colors for the fireworks
     private static final List<Color> FIREWORK_COLORS = Arrays.asList(
             Color.AQUA,
             Color.RED,
@@ -23,25 +26,34 @@ public class FireworkLauncher {
             Color.PURPLE
     );
 
+    // Method to launch 5 fireworks over time and apply glowing effect
     public static void launchFireworks(Player player, JavaPlugin plugin) {
-        Location loc = player.getLocation();
         World world = player.getWorld();
 
-        // Schedule 5 fireworks, each firing every 10 ticks (0.5 seconds)
+        // Apply glowing effect in GOLD color
+        player.setGlowing(true);
+
+        // Schedule 5 fireworks to launch every 10 ticks (0.5 seconds)
         new BukkitRunnable() {
             int fireworkCount = 0;
 
             @Override
             public void run() {
                 if (fireworkCount >= 5) {
-                    cancel();  // Stop after 5 fireworks
+                    // After 5 fireworks, remove the glowing effect and stop the task
+                    player.setGlowing(false);
+                    cancel();
                     return;
                 }
 
+                // Get the player's current position
+                Location loc = player.getLocation();
+
+                // Create and launch a firework at the player's current position
                 Firework firework = world.spawn(loc, Firework.class);
                 FireworkMeta meta = firework.getFireworkMeta();
 
-                // Customize firework with different colors for each launch
+                // Set firework color and effects
                 FireworkEffect effect = FireworkEffect.builder()
                         .withColor(FIREWORK_COLORS.get(fireworkCount))
                         .with(FireworkEffect.Type.BALL_LARGE)
@@ -49,7 +61,7 @@ public class FireworkLauncher {
                         .flicker(true)
                         .build();
                 meta.addEffect(effect);
-                meta.setPower(1); // Set flight duration to 1
+                meta.setPower(1);  // Firework flight duration of 1
 
                 firework.setFireworkMeta(meta);
 
